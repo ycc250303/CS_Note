@@ -14,7 +14,7 @@
 
   * 确认TLS协议版本
   * 服务器产生的随机数 `Server Random`
-  * 确认的密码套件列表3
+  * 确认的密码套件列表
   * 服务器的数字证书 `Server Certificate`
   * `Server Hello Done`表示结束
 
@@ -28,8 +28,8 @@
   * CA的数字签名及算法
 * 证书签发
   * 将相关信息打包，进行Hash计算得到Hash值
-  * 使用私钥将Hash值加密，生成`Certificate Signature`
-  * 将`Certificate Signature`添加到文件证书上
+  * 使用私钥将Hash值加密，生成 `Certificate Signature`
+  * 将 `Certificate Signature`添加到文件证书上
 * 校验证书
   * 使用同样的算法得到Hash值H1
   * 使用CA的公钥解密Certificate Signature，得到Hash值H2
