@@ -95,3 +95,16 @@
 ## 2026-02-26
 
 * [X] Java 并发：CAS，原子类
+
+## 2026-02-28
+
+* [X] MySQL 复习：索引、MVCC
+* [X] Java 并发：Adder
+
+## 2026-03-02
+
+* [X] 计网复习：HTTP、TCP/UDP、CDN
+* [X] MySQL 复习：锁、日志、索引、事务
+* [ ] Redis 复习：数据结构、缓存一致性、高可用
+* [ ] JWT 复习
+* [ ] RabbitMQ 复习
