@@ -1,3 +1,5 @@
+主要参考：B 站黑马 MySQL ，小林 coding
+
 # SQL
 
 ## 基础
@@ -125,6 +127,37 @@ truncate table 表名;
 |          | YEAR      | 1 byte  | 1901 至 2155                               | YYYY                | 年份值                   |
 |          | DATETIME  | 8 bytes | 1000-01-01 00:00:00 至 9999-12-31 23:59:59 | YYYY-MM-DD HH:MM:SS | 混合日期和时间值         |
 |          | TIMESTAMP | 4 bytes | 1970-01-01 00:00:01 至 2038-01-19 03:14:07 | YYYY-MM-DD HH:MM:SS | 混合日期和时间值(时间戳) |
+
+##### 字段类型选择常见问题
+
+- **整数类型 `UNSIGNED` 的作用**
+
+  - 不允许负值的无符号整数，可以将正整数的上限提高一倍。
+  - 对于从 0 开始递增的 ID 列，使用 `UNSIGNED` 非常适合。
+- **`VARCHAR(10)` 和 `VARCHAR(100)` 的差异**
+
+  - 存储相同字符串时，占用磁盘空间基本一致。
+  - 但在内存中操作时，通常会按照字段定义长度分配内存，过大的长度会带来额外内存开销。
+- **`DECIMAL` vs `FLOAT/DOUBLE`**
+
+  - `DECIMAL` 是定点数，适合存储精确小数（如金额），避免浮点误差。
+  - `FLOAT/DOUBLE` 是浮点数，只能存近似值，主要用于对精度要求不高、但计算性能要求高的场景。
+- **`DATETIME` vs `TIMESTAMP`**
+
+  - `DATETIME` 不含时区信息，占 8 字节，时间范围更大（到 9999 年），常用于业务逻辑上的“绝对时间”。
+  - `TIMESTAMP` 带时区语义，占 4 字节，范围较小（到 2038 年），更适合多时区或审计场景，但有时区转换开销。
+- **`NULL` vs `''`（空字符串）**
+
+  - `NULL` 表示“缺失/未知”，不等于任何值，比较运算结果为 `NULL`，需要用 `IS NULL` / `IS NOT NULL` 判断。
+  - `''` 是已知的空字符串，参与比较和聚合：`COUNT(col)` 会统计它，`SUM` 会视为 0。
+- **MySQL 中的布尔类型**
+
+  - 没有真正的 `BOOLEAN` 类型，通常使用 `TINYINT(1)` 存储布尔值，约定 0 / 1 表示假 / 真。
+- **手机号用 `INT` 还是 `VARCHAR` 存储？**
+
+  - 推荐使用 `VARCHAR`：
+    - 手机号不参与算术运算；
+    - 可能包含前导 0、国家区号等，用整数容易丢失信息或被错误格式化。
 
 #### DML
 
@@ -887,6 +920,57 @@ select count(distinct substring(column_name,left,right))/count(*) from table_nam
 5. 尽量使用联合索引，避免回表
 6. 控制索引数量
 7. 如果索引不能存储NULL值，创建表时用NOT NULL约束
+
+#### MySQL 8.x 中的索引新特性
+
+- **隐藏索引（不可见索引）**
+
+  - 索引仍然维护，但优化器不会使用，常用于灰度下线索引或排查问题。
+  - 主键索引不能设置为隐藏。
+- **降序索引**
+
+  - ySQL 8.x 之前虽然支持 `DESC` 语法，但底层仍是升序索引；8.x 起真正支持物理降序索引。
+  - 在多列混合升/降序排序场景下可以更好利用索引，减少 `filesort`。
+- **函数索引**
+
+  - 从 8.0.13 起支持在索引中使用表达式或函数结果（如对 `LOWER(col)` 建索引），可避免因函数计算导致索引失效。
+
+#### 索引下推（Index Condition Pushdown, ICP）
+
+- **基本思想**
+
+  - 允许存储引擎在遍历索引时，提前执行部分 `WHERE` 条件过滤，减少回表次数和 Server 层的数据传输量。
+  - 可以理解为：把一部分原本在 Server 层做的条件判断“下推”到存储引擎层。
+- **典型示例**
+
+```sql
+CREATE TABLE `user` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(20) NOT NULL,
+  `zipcode` varchar(20) NOT NULL,
+  `birthdate` date NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_username_birthdate` (`zipcode`,`birthdate`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 查询 zipcode 为 431200 且生日在 3 月的用户
+SELECT * FROM user 
+WHERE zipcode = '431200' 
+  AND MONTH(birthdate) = 3;
+```
+
+- **没有 ICP 时**
+
+  - 存储引擎层先根据 `zipcode` 索引字段找到所有 `zipcode = '431200'` 的主键 ID，然后回表读取完整记录。
+  - Server 层再根据 `MONTH(birthdate) = 3` 条件做二次筛选。
+- **启用 ICP 后**
+
+  - 存储引擎层在扫描二级索引时就可以根据 `MONTH(birthdate) = 3` 过滤掉大部分不符合条件的记录，再做回表。
+- **适用场景简记**
+
+  - 适用于 InnoDB / MyISAM，引擎层能利用到二级索引时收益最大。
+  - 常见于访问类型为 `range` / `ref` / `eq_ref` / `ref_or_null` 的范围查询。
+  - 子查询临时表、无索引的临时表、部分存储过程场景下不会使用 ICP。
 
 ### SQL优化
 
