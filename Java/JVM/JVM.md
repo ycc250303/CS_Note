@@ -270,7 +270,7 @@
   * **效率问题** ：标记和清除两个过程效率都不高。
   * **空间问题** ：标记清除后会产生大量不连续的内存碎片。
 
-![1763861393998](https://file+.vscode-resource.vscode-cdn.net/d%3A/GitHub/ycc/JavaGuide/Java/JVM/image/%E4%BA%8C%E5%93%A5+JavaGuide/1763861393998.png)
+![1763861393998](image/二哥+JavaGuide/1763861393998.png)
 
 ### 复制算法
 
@@ -458,7 +458,7 @@ public static final String cmower = "沉默王二";
 * 双亲委派模型要求除了顶层的启动类加载器外，其余的类加载器都应有自己的父类加载器。
 * `ClassLoader` 实例会在试图亲自查找类或资源之前，将搜索类或资源的任务委托给其父类加载器。
 
-![1763615700937](https://file+.vscode-resource.vscode-cdn.net/d%3A/GitHub/ycc/JavaGuide/Java/JVM/image/%E4%BA%8C%E5%93%A5+JavaGuide/1763615700937.png)
+![1763615700937](image/二哥+JavaGuide/1763615700937.png)
 
 ### 双亲委派模型执行过程
 

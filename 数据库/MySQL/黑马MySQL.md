@@ -1709,9 +1709,9 @@ unlock tables;
   * redo log 是防止 Buffer Pool 脏页丢失设计的，脏页刷新到磁盘中，这部分数据就可以被擦除
   * 如果写入位置追上了擦除位置（redo log 满了），**此时 MySQL 不能再执行新的更新操作，会被阻塞**，此时会将 Buffer Pool 脏页刷新到磁盘中，再擦除 redo log 记录，腾出空间后再执行 MySQL 操作
 
-![image-20260326205023040](D:\GitHub\ycc\CS_Note\数据库\MySQL\image\黑马MySQL\image-20260326205023040.png)
+![image-20260326205023040](image/黑马MySQL/image-20260326205023040.png)
 
-![image-20260326205058952](D:\GitHub\ycc\CS_Note\数据库\MySQL\image\黑马MySQL\image-20260326205058952.png)
+![image-20260326205058952](image/黑马MySQL/image-20260326205058952.png)
 
 ##### redo log 刷盘
 
@@ -1728,7 +1728,7 @@ unlock tables;
   * 针对参数 0：会把缓存在 redo log buffer 中的 redo log，通过调用 `write()` 写到操作系统的 Page Cache，然后调用 `fsync()` 持久化到磁盘。所以参数为 0 的策略，MySQL 进程的崩溃会导致上一秒钟所有事务数据的丢失
   * 针对参数 2：调用 fsync，将缓存在操作系统中 Page Cache 里的 redo log 持久化到磁盘。所以参数为 2 的策略，较取值为 0 情况下更安全，因为 MySQL 进程的崩溃并不会丢失数据，只有在操作系统崩溃或者系统断电的情况下，上一秒钟所有事务数据才可能丢失。
 
-![image-20260326204915237](D:\GitHub\ycc\CS_Note\数据库\MySQL\image\黑马MySQL\image-20260326204915237.png)
+![image-20260326204915237](image/黑马MySQL/image-20260326204915237.png)
 
 #### binlog
 

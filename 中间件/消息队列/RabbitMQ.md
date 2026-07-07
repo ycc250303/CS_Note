@@ -125,9 +125,9 @@
 
 ## 数据可靠性
 
-![image-20260323101724007](D:\GitHub\ycc\CS_Note\中间件\消息队列\image\RabbitMQ\image-20260323101724007.png)
+![image-20260323101724007](image/RabbitMQ/image-20260323101724007.png)
 
-![image-20260323101807664](D:\GitHub\ycc\CS_Note\中间件\消息队列\image\RabbitMQ\image-20260323101807664.png)
+![image-20260323101807664](image/RabbitMQ/image-20260323101807664.png)
 
 ### 生产者可靠性
 

@@ -4,144 +4,168 @@
 
 ## 2026-01-12
 
-- [X] 整理、复习Java基础
-- [X] 整理、复习MySQL基础
-- [X] 整理、复习TCP、UDP基础
+- [x] 整理、复习Java基础
+
+- [x] 整理、复习MySQL基础
+
+- [x] 整理、复习TCP、UDP基础
 
 ## 2026-01-14
 
-* [X] 整理、复习Java I/O
-* [X] 整理、复习HTTP基础
+* [x] 整理、复习Java I/O
+
+* [x] 整理、复习HTTP基础
+
 * [ ] 整理、复习操作系统
 
 ## 2026-01-15
 
-* [X] 整理、复习操作系统
+* [x] 整理、复习操作系统
 
 ## 2026-01-17
 
 * [ ] 整理、复习Java集合
-* [X] Redis 数据类型+底层数据结构
+
+* [x] Redis 数据类型+底层数据结构
 
 ## 2026-01-18
 
-* [X] Redis 数据类型+底层数据结构
+* [x] Redis 数据类型+底层数据结构
 
 ## 2026-01-19
 
-* [X] 整理、复习 Java 集合
-* [X] Redis 客户端
+* [x] 整理、复习 Java 集合
+
+* [x] Redis 客户端
+
 * [ ] 并发
 
 ## 2026-01-20
 
-* [X] Java 并发编程
+* [x] Java 并发编程
 
 ## 2026-01-22
 
-* [X] Redis 缓存
-* [X] Java 并发编程：线程安全
+* [x] Redis 缓存
+
+* [x] Java 并发编程：线程安全
 
 ## 2026-01-23
 
-* [X] Redis 线程安全
+* [x] Redis 线程安全
 
 ## 2026-01-24
 
-* [X] Java 并发编程：synchorized 原理
-* [X] Redis 分布式锁（1/2）
+* [x] Java 并发编程：synchorized 原理
+
+* [x] Redis 分布式锁（1/2）
 
 ## 2026-01-25
 
-* [X] MySQL 执行原理分析
-* [X] MySQL 行数据存储分析
+* [x] MySQL 执行原理分析
+
+* [x] MySQL 行数据存储分析
 
 ## 2026-02-03
 
-* [X] RabbitMQ 复习
-* [X] Java 语法糖复习
+* [x] RabbitMQ 复习
+
+* [x] Java 语法糖复习
 
 ## 2026-02-04
 
-* [X] Java并发：wait-ify
+* [x] Java并发：wait-ify
+
 * [ ] Spring 面试题
 
 ## 2026-02-06
 
-* [X] Java 并发：保护性暂停
+* [x] Java 并发：保护性暂停
 
 ## 2026-02-07
 
-* [X] Java 并发：park、线程活跃性
+* [x] Java 并发：park、线程活跃性
 
 ## 2026-02-08
 
-* [X] Java 并发：ReentrantLock 介绍
+* [x] Java 并发：ReentrantLock 介绍
 
 ## 2026-02-09
 
-* [X] Redis：数据持久化 + 主从集群
-* [X] Java 并发：API 复习
+* [x] Redis：数据持久化 + 主从集群
+
+* [x] Java 并发：API 复习
 
 ## 2026-02-10
 
-* [X] Redis：哨兵模式、分片集群
-* [X] Spring面试题
+* [x] Redis：哨兵模式、分片集群
+
+* [x] Spring面试题
 
 ## 2026-02-14
 
-* [X] Java并发：JMM、volatile
+* [x] Java并发：JMM、volatile
 
 ## 2026-02-26
 
-* [X] Java 并发：CAS，原子类
+* [x] Java 并发：CAS，原子类
 
 ## 2026-02-28
 
-* [X] MySQL 复习：索引、MVCC
-* [X] Java 并发：Adder
+* [x] MySQL 复习：索引、MVCC
+
+* [x] Java 并发：Adder
 
 ## 2026-03-02
 
-* [X] 计网复习：HTTP、TCP/UDP、CDN
-* [X] MySQL 复习：锁、日志、索引、事务
-* [X] JWT 复习
-* [X] RabbitMQ 复习
+* [x] 计网复习：HTTP、TCP/UDP、CDN
+
+* [x] MySQL 复习：锁、日志、索引、事务
+
+* [x] JWT 复习
+
+* [x] RabbitMQ 复习
 
 ## 2026-03-03
 
-* [X] Redis 复习：数据结构、缓存一致性、高可用
-* [X] OS 复习：面试题速通
+* [x] Redis 复习：数据结构、缓存一致性、高可用
+
+* [x] OS 复习：面试题速通
 
 ## 2026-03-05
 
-* [X] 面经整理
-* [X] Redis：过期删除，内存淘汰
+* [x] 面经整理
+
+* [x] Redis：过期删除，内存淘汰
 
 ## 2026-03-09
 
-* [X] OS：内存管理
-* [X] Java：整理Java笔记
+* [x] OS：内存管理
+
+* [x] Java：整理Java笔记
 
 ## 2026-03-11
 
-* [X] OS：进程、线程基础知识
-* [X] OS：进程通信
+* [x] OS：进程、线程基础知识
+
+* [x] OS：进程通信
+
 * [ ] OS：线程冲突
 
 ## 2026-03-14
 
-* [X] OS：调度算法
+* [x] OS：调度算法
 
 ## 2026-03-16
 
-* [X] Redis：分布式锁
+* [x] Redis：分布式锁
 
 ## 2026-03-18
 
-* [X] 操作系统复习
-* [X] 分布式理论
+* [x] 操作系统复习
+
+* [x] 分布式理论
 
 ## 2026-03-22
 
-* [ ] 整理面经，查漏补缺
+* [x] 整理面经，查漏补缺
