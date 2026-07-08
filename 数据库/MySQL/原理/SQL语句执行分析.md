@@ -2,7 +2,7 @@
 
 ## MySQL基础架构
 
-<pre class="vditor-reset" placeholder="" contenteditable="true" spellcheck="false"><p data-block="0"><img src="https://file+.vscode-resource.vscode-cdn.net/d%3A/GitHub/ycc/CS_Note/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/%E5%8E%9F%E7%90%86/image/SQL%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E5%88%86%E6%9E%90/1769269617233.png" alt="1769269617233"/></p></pre>
+![1769269617233](image/SQL语句执行分析/1769269617233.png)
 
 * MySQL 可以简单分为 Server 层和存储引擎层这两层。**Server 层处理查询解析、分析、优化、缓存以及与客户端的交互等操作**，而**存储引擎层负责数据的存储和读取**
 * 主要构成：
