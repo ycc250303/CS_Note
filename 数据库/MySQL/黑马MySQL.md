@@ -1023,13 +1023,64 @@ load data local infile 'root/sql1.log' into table 'tb_user' fields terminated by
 #### limit优化
 
 * 大数据情况下效率很低
-* 创建覆盖索引、使用子查询优化
+* `limit offset, size` 比 `limit size` 慢，offset越大越慢（`limit size` 等价于 `limit 0, size`）
+* 原因：Server层会从引擎层取出 offset+size 条数据，再丢弃前offset条，只保留size条
+  * 走主键索引：取出完整行再丢弃，`select *` 时拷贝整行开销更大
+  * 走非主键索引：每条还要回表；offset过大时优化器可能改成全表扫描（type=ALL）
+* 覆盖索引 + 子查询优化（延迟关联）：先只查主键，再回表取完整行
+
+```sql
+# 走主键：先定位起始id，再按主键范围取
+select * from page
+where id >= (select id from page order by id limit 6000000, 1)
+order by id limit 10;
+
+# 走非主键：子查询只取id（覆盖索引，不回表），再按id关联取整行
+select * from page t1,
+  (select id from page order by user_name limit 6000000, 100) t2
+where t1.id = t2.id;
+```
+
+* 上述优化只能减少回表/拷贝整行，仍要扫描并丢弃offset条，offset极大时收益有限
+
+#### 深度分页优化
+
+* 深度分页：offset到百万、千万级时，LIMIT性能急剧下降；MySQL/ES都无法根治，只能规避
+* 全表导出（同步到ES/Hive）
+  * 不要一次性`select *`，也不要用`limit offset, size`循环翻页
+  * 按主键分批，用上一批最大id作为下一批条件（seek/游标分页）
+  * 每次走主键定位后再向后扫描，无论翻到哪一批耗时都稳定
+
+```sql
+select * from page where id > last_id order by id limit 100;
+```
+* 用户分页展示
+  * 搜索/筛选优先用ES，并限制结果总数（如1万以内）
+  * 必须用MySQL时，也限制返回数量（如1k以内），才能勉强支持跳页
+  * 更好的做法：只支持上一页/下一页或瀑布流，配合`start_id`分批获取，查询速度与页码无关
+* 数据量长期只有千级，直接用`limit offset, size`即可
 
 #### count优化
 
-* MyISAM：将表的总行数记录在了磁盘上，会直接返回数据
-* InnoDB：需要一行一行读取数据并累计计数（根据约束判断是否为null）
-* 效率：count(字段)<count(主键id)<count(1)≈count(*)
+* count()：统计符合条件的记录中，参数不为NULL的行数
+  * `count(字段)`：该字段为NULL的行不计入
+  * `count(1)` / `count(*)`：参数恒不为NULL，统计全部行数（`count(*)` 会被转成 `count(0)`，与 `count(1)` 无性能差异）
+* MyISAM：表的meta信息中存了row_count，无where条件时直接返回，O(1)
+  * 带where后也要扫描，与InnoDB无区别
+* InnoDB：支持事务+MVCC，同一时刻不同会话看到的行数可能不同，无法维护单一row_count，只能逐行扫描计数
+* 执行过程（InnoDB）：Server层维护count变量，循环向引擎读记录，参数不为NULL则+1
+  * 有二级索引时，优化器优先扫key_len最小的二级索引（比聚簇索引小，I/O更少）
+  * 无二级索引时才扫主键索引
+  * `count(主键)`：要读出主键值再判断是否为NULL
+  * `count(1)` / `count(*)`：不读字段值，读到一行就+1
+  * `count(普通字段)`：全表扫描，效率最差
+* 效率：`count(字段)` < `count(主键id)` < `count(1)` ≈ `count(*)`
+  * `count(主键)` 略慢于 `count(1)` 只发生在表上没有二级索引、只能扫聚簇索引时
+  * 有二级索引时，`count(主键)` / `count(1)` / `count(*)` 执行过程相同
+* 大表 `count(*)` 优化
+  * 不需要精确值：`show table status` 或 `explain` 的rows做估算
+  * 需要精确值：单独一张计数表，插入/删除时同步维护计数字段
+* 尽量给表建二级索引；不要用 `count(字段)` 统计总行数，若要统计该字段非NULL行数，给该字段建二级索引
 
 #### update优化
 
