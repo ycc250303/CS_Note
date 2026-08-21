@@ -1,4 +1,4 @@
-> 拆自 [黑马MySQL.md](./黑马MySQL.md)，原文未改。
+> 拆自 [黑马MySQL.md](./归档/黑马MySQL.md)（已归档，不再维护），原文未改。事务原理见 [事务.md](./事务.md)。
 
 # InnoDB引擎
 
@@ -62,68 +62,6 @@
     ![1761371132861](image/黑马MySQL/1761371132861.png)
   * Purge Thread：回收事务以及提交的undo log
   * Page Cleaner Thread：协助Master Thread刷新脏页到磁盘
-
-## 事务原理
-
-* 事务的原子性、一致性、持久性由redo log和undo log控制
-* 隔离性通过锁和MVCC实现
-
-## MVCC
-
-### 基本概念
-
-* 当前读
-  * 读取的是记录的最新版本，读取时要保证其他并发事务不能修改当前记录描绘对读取的记录进行加锁
-  * `select ... lock in share mode,select for ... update,update,insert,delete(排他锁)` 都是当前读
-* 快照读
-  * 快照读，读取的是记录数据的可见版本。可能是历史数据，非阻塞读
-  * 简单的select（不加锁）就是快照读
-  * Read Commited：每次select都会生成一个快照读
-  * Repeatable Read：开启事务后第一个select语句才是快照读的地方
-  * Serializable：快照读会退化为当前读
-* MVCC
-  * Multi-Version Concurrency Control，多版本并发控制。
-  * 维护一个数据的多个版本，使得读写操作没有冲突
-  * 具体实现依赖数据库中三个隐式字段、undo log日志、readView
-
-### 隐式字段
-
-* 创建表时，会生成隐藏的字段
-* 查看隐式字段：`ibd2sdi ibd文件`
-
-![1761385496549](image/黑马MySQL/1761385496549.png)
-
-### undolog
-
-* insert的时候，日志只在回滚需要，事务提交后可被立即删除
-* update、delete的时候，日志在回滚和快照读都需要，不会立即被删除
-* undo log版本链：事务对同一条记录进行修改，会导致该记录的undo log生成一条记录版本的链表，头部是最新的旧纪录，尾部是最早的旧纪录
-
-![1761386320598](image/黑马MySQL/1761386320598.png)
-
-### readView
-
-* 快照读SQL执行时MVCC提取数据的依据，记录并维护系统当前活跃的事务id
-* 核心字段
-
-![1761386433331](image/黑马MySQL/1761386433331.png)
-
-* 版本链数据访问规则：
-  * trx_id(当前事务id)==creator_trx_id，可以访问（数据是这个事务更改的）
-  * trx_id < min_trx_id，可以访问（数据已经提交）
-  * trx_id > max_trx_id，不能访问（事务是在ReadView生成后才开启）
-  * min_trx_id<=trx_id<=max_trx_id，trx_id不在m_ids中可以访问（数据已经提交）
-* 生成时机：
-  * Read Commited：事务中每次执行快照读时生成ReadView
-  * Repeatable Read：事务第一次执行快照读时生成ReadView，后续复用
-
-### 可重复读
-
-* 启动事务时生成一个Read View，然后整个事务期间都用这个Read View
-
-### 读提交
-
-* 每次读取数据时，都会生成一个新的 Read View
 
 ## 与 MyISAM 区别
 
