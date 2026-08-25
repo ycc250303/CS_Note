@@ -299,7 +299,7 @@ load data local infile 'root/sql1.log' into table 'tb_user' fields terminated by
 
 * 根据排序字段建立索引，遵循最左前缀法则
 * 尽量使用覆盖索引
-* 多字段+同时存在升降序，在创建索引时要说明
+* 多字段+同时存在升降序（asc/desc），在创建索引时要说明
 * 不可避免需要filesort时，可以增大排序缓冲区大小
 
 ### group by优化
